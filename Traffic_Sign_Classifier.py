@@ -16,7 +16,7 @@
 # ---
 # ## Step 0: Load The Data
 
-# In[184]:
+# In[2]:
 
 # Load pickled data
 import pickle
@@ -58,7 +58,7 @@ X_test, y_test = test['features'], test['labels']
 
 
 
-# In[185]:
+# In[4]:
 
 ### Replace each question mark with the appropriate value.
 
@@ -69,7 +69,7 @@ n_train = len(X_train)
 n_test = len(X_test)
 
 # TODO: What's the shape of an traffic sign image?
-image_shape = len(X_train[0]), len(X_train[0][0]) # train["sizes"][0]
+image_shape = X_train[0].shape
 
 # TODO: How many unique classes/labels there are in the dataset.
 n_classes = max(y_train + 1)
@@ -86,13 +86,24 @@ print("Number of classes =", n_classes)
 # 
 # **NOTE:** It's recommended you start with something simple first. If you wish to do more, come back to it after you've completed the rest of the sections.
 
-# In[186]:
+# In[10]:
 
 ### Data exploration visualization goes here.
 ### Feel free to use as many code cells as needed.
 import matplotlib.pyplot as plt
 # Visualizations will be shown in the notebook.
 get_ipython().magic('matplotlib inline')
+
+plt.hist(y_train, 43)
+plt.show()
+print (y_train.shape)
+
+example = [None] * 43
+for eX, ey in zip(X_train, y_train):
+    example[ey] = eX;
+for i, e in enumerate(example):
+    plt.figure()
+    plt.imshow(e)
 
 
 # ----
@@ -142,7 +153,7 @@ def preprocess(one_image):
     #r = cv2.cvtColor(one_image, cv2.COLOR_BGR2GRAY)
     
     # normalize
-    r = np.array(r) / 255
+    r = np.array(r) / 255 - 0.5
     # add dimention
     # r = np.expand_dims(r, axis=3)
     return r
@@ -160,9 +171,9 @@ myX_train, y_train = shuffle(myX_train, y_train)
 # _Describe how you preprocessed the data. Why did you choose that technique?_
 
 # **Answer:** 
-# 1. Gray it out. ( but finaly I removed it )
-# 2. normalize
-# 3. shuffle
+# 1. Gray it out. I think color doesn't matter that much as shape matters more. Less input will make the training faster.( but finaly I removed it )
+# 2. normalize. It is much easier to train a normalized data to get better accuracy.
+# 3. shuffle. Make sure each batch will cover almost all the catergories instead of focusing on one catergory.
 
 # In[188]:
 
@@ -398,7 +409,10 @@ print(manual_x[4].shape)
 # 
 
 # **Answer:**
-# The quality of picture doesn't quite matter because we need to resize them to 32x32 anyway.
+# 
+# The resolution of picture doesn't quite matter that much as long as it is greater than 32x32 because we need to resize down to them to 32x32 anyway.
+# 
+# Other factor of pictures like the brightness will affect the result. Too bright or too dark will make classficiation more difficult.
 
 # In[193]:
 
@@ -448,7 +462,7 @@ eval_my_collection(manual_x, manual_y)
 # 
 
 # **Answer:**
-# No. The model only predict as 20% accuracy on the captured pictures.
+# No. The model only predict as 20% accuracy on the captured pictures. The model I have 75% accuracy on the testing dataset. It is most likely to because of overfitting. I may put too many CNN layers and full connection layers without any dropout applied. More effort gains nothing. 
 
 # In[196]:
 
